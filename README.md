@@ -1,2 +1,25 @@
-# A-SERVERLESS-DOCUMENT-COMPPRESSION-APPLICATION-USING-AWS-SERVICES
-To design a serverless pipeline for automatic  DOCX file compression.  To integrate AWS services (S3, Lambda, API  Gateway, IAM, SNS).  To provide a simple frontend for file upload  and download.  To ensure security, scalability, and cost effectiveness
+# Serverless Mini Dropbox – Secure File Storage & Sharing Platform
+
+A scalable serverless cloud storage platform built on AWS that enables secure file upload, download, sharing, metadata management, and user authentication.
+
+## Features
+
+- User Authentication (Amazon Cognito)
+- File Upload
+- File Download
+- File Sharing
+- Metadata Management
+- Dashboard
+- CloudWatch Monitoring
+
+## Tech Stack
+
+- AWS Lambda
+- Amazon S3
+- Amazon DynamoDB
+- Amazon Cognito
+- API Gateway
+- CloudFront
+- IAM
+- CloudWatch
+- SNS
