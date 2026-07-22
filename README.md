@@ -27,13 +27,10 @@ A scalable, serverless cloud storage platform built entirely on AWS. It enables 
 ### Dashboard
 ![Dashboard](docs/screenshots/dashboard.png)
 
-### File Upload
+### File Upload,sharing and delete
 ![File Upload](docs/screenshots/upload.png)
 
-### File Sharing
-![File Sharing](docs/screenshots/share.png)
 
-> Save your screenshots inside `docs/screenshots/` and update the file names/paths above to match. PNG or JPG both work — keep each image under ~1–2 MB so the README loads quickly on GitHub.
 
 ---
 
