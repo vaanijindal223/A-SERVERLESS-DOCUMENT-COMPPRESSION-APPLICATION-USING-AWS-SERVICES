@@ -1,5 +1,7 @@
 import streamlit as st
 from datetime import datetime
+from core.formatters import format_bytes
+import time
 
 from services import storage_service
 from core.session import get_username, end_session, mark_file_shared, shared_count
@@ -47,15 +49,15 @@ def _header():
 
 
 def _metrics(files):
+    total_size = sum(item.get("FileSize", 0) for item in files)
+
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Total Files", len(files))
     with col2:
-        st.metric("Storage Used", "N/A")
-        st.caption("File size isn't tracked by the backend yet")
+        st.metric("Storage Used", format_bytes(total_size))
     with col3:
         st.metric("Shared This Session", shared_count())
-
 
 def _upload_section():
     st.subheader("Upload File")
@@ -66,10 +68,30 @@ def _upload_section():
             success, message = storage_service.upload_file(
                 uploaded_file.name, uploaded_file.getvalue()
             )
-        (st.success if success else st.error)(message)
-        if success:
-            st.rerun()
 
+        if not success:
+            st.error(message)
+            return
+
+        # S3's ObjectCreated trigger writes DynamoDB metadata asynchronously,
+        # so poll briefly until the new file actually shows up before refreshing.
+        with st.spinner("Processing upload..."):
+            found = _wait_for_file(uploaded_file.name)
+
+        if not found:
+            st.warning("Upload succeeded, but it's taking longer than usual to appear. Refresh in a few seconds.")
+
+        st.success(message)
+        st.rerun()
+
+
+def _wait_for_file(file_name: str, attempts: int = 8, delay_seconds: float = 1.0) -> bool:
+    for _ in range(attempts):
+        ok, files = storage_service.list_files()
+        if ok and any(f.get("FileName") == file_name for f in files):
+            return True
+        time.sleep(delay_seconds)
+    return False
 
 def _file_list(files):
     st.subheader("My Files")
